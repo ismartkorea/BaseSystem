@@ -1,12 +1,15 @@
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
+const fileStore = require('session-file-store')(session); // session file store
 
 const index = require('./routes/index');
+const login = require('./routes/login');
 const users = require('./routes/users');
 
 // MySQL Connect 설정.
@@ -26,9 +29,19 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+  secret: 'system!@$',	// 암호화
+  resave: false,	
+  saveUninitialized: true,	
+  cookie: {	
+    httpOnly: true,
+  },
+  store: new fileStore() // 세션 객체에 세션스토어를 적용
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/login', login);
 app.use('/users', users);
 
 // catch 404 and forward to error handler

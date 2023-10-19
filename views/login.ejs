@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+ <head>
+   <title><%=title%></title>
+   <script src="/scripts/jquery-3.7.1.min.js"></script>
+   <script>
+    $(document).ready(function() {
+
+            // form submit
+            $("#submitBtn").on("click",function() {
+                //e.preventDefault();
+
+                var dataVals = {};
+
+                if($("#usrId").val()==null || $("#usrId").val()=="") {
+                    alert("아이디를 입력하여 주세요.");
+                    $("#usrId").focus();
+                    return;
+                }
+                if($("#usrPwd").val()==null || $("#usrPwd").val()=="") {
+                    alert("비밀번호를 입력하여 주세요.");
+                    $("#usrPwd").focus();
+                    return;
+                }
+
+                dataVals = {usrId : $("#usrId").val(), usrPwd : $("#usrPwd").val() };
+                // 데이타 전송 처리.
+                $.ajax({
+                    url : "/login/process",
+                    type : "post",
+                    dataType : "json",
+                    data : dataVals,
+                    success : function(data) {
+console.log(">>> result data = " + data.result);
+                        if(data.result == "err0") {
+                            alert("아이디가 틀립니다. 다시 확인하세요");
+                            $("#usrId").focus();
+                        }
+                        if(data.result == "err1") {
+                            alert("비밀번호가 틀립니다. 다시 확인하세요");
+                            $("#usrPwd").focus();
+                        }
+                        if(data.result == "NO") {
+                                //console.log(">>> 데이타 없음");
+                                alert("해당되는 회원님이 없습니다.\n다시 한번 확인하시고 입력하여 보세요.");
+                                $("#usrId").focus();
+                        }                        
+                        if(data.result == "OK") {
+                            alert("환영합니다! " + data.session.usrId + " 님");
+                            location.href = '/';
+                        }
+                    },
+                    error : function(err) {
+                        alert("errCode : " + JSON.stringify(err));
+                    }
+                });
+
+            });
+    });
+   </script>
+ </head>
+<body>
+  <div>
+       <input type="text" id="usrId" name="usrId" value=""/>
+  </div>
+  <div>
+       <input type="password" id="usrPwd" name="usrPwd" value=""/>
+  </div>
+  <div>
+    <button type="submit" id="submitBtn" name="submitBtn">로그인</button>
+  </div>    
+</body>
+</html>

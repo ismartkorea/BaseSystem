@@ -5,9 +5,9 @@
 const mysql = {
     host: 'asciiworld.cafe24.com',
     port: 3306,
-    database : 'ndsysdb',
-    user: 'root',
-    password: 'root9123',
+    database : 'sysdb',
+    user: 'system',
+    password: 'system9123',
     insecureAuth: true,
     multipleStatements: true
 };
